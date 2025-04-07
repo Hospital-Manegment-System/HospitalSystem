@@ -67,4 +67,4 @@ const userSchema = new mongoose.Schema({
 });
 
 // Use cached model if it exists (for hot-reloading), otherwise create a new model.
-module.exports = mongoose.model("User", userSchema);
+export default mongoose.models.User || mongoose.model("User", userSchema);
