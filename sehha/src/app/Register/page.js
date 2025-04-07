@@ -27,7 +27,6 @@ export default function RegisterPage() {
     try {
       const response = await axios.post("/api/auth/register", formData);
       if (response.status === 201) {
-        // On successful registration, redirect to the Login page
         router.push("/login");
       }
     } catch (err) {
