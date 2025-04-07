@@ -7,6 +7,7 @@ export async function POST(request) {
   try {
     await connectMongoDB();
 
+
     // Destructure additional fields from the request body
     const {
       name,
@@ -17,6 +18,7 @@ export async function POST(request) {
       petType,
       petName,
     } = await request.json();
+
 
     // 1. Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -30,16 +32,20 @@ export async function POST(request) {
     // 2. Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+
     // 3. Create new user including the extra fields
+
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
+
       phoneNumber,
       profilePicture,
       petType,
       petName,
       // role defaults to "patient" per your model
+
     });
     await newUser.save();
 
