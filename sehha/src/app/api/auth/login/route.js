@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import connectMongoDB from "../../../lib/config";
 import User from "../../../lib/models/User"; // Adjust the import path as necessary
-
+import { cookies } from "next/headers";
 export async function POST(request) {
   try {
     await connectMongoDB();

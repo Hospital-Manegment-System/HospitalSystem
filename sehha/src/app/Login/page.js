@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 // If using NextAuth for Google, import signIn
 // import { signIn } from "next-auth/react";
 
@@ -17,31 +18,49 @@ export default function LoginPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError(null);
+  //   try {
+  //     const res = await fetch("/api/auth/login", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) {
+  //       setError(data.error);
+  //     } else {
+  //       // Redirect based on user role:
+  //       if (data.user.role === "admin") {
+  //         router.push("/dashboard/admin");
+  //       } else {
+  //         router.push("/");
+  //       }
+  //     }
+  //   } catch (err) {
+  //     setError("Something went wrong. Please try again.");
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
+      const res = await axios.post("/api/auth/login", formData, {
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error);
+
+      // Redirect based on user role
+      if (res.data.user.role === "admin") {
+        router.push("/Dashboard");
       } else {
-        // Redirect based on user role:
-        if (data.user.role === "admin") {
-          router.push("/dashboard/admin");
-        } else {
-          router.push("/");
-        }
+        router.push("/");
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(err.response?.data?.error || "Something went wrong");
     }
   };
-
   const handleGoogleLogin = async () => {
     // Trigger Google login via NextAuth
     signIn("google");
