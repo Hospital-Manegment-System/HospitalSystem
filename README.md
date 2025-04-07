@@ -72,4 +72,4 @@ The mission of **VetNova** is to revolutionize veterinary care by offering a sea
 **Visit us at:** [VetNova]()  
 - **Wireframe & Mockup Link**: [Here](https://www.figma.com/design/NhSNJTS3HaH2DjF6sZY6N0/Untitled?node-id=0-1&p=f&t=CBK4Vf4ooLiil6XK-0)  
 - **Trello Board:** [Here](https://trello.com/b/3vVFiqOl/hospital-project)
-- **DataBase:** [Here]([https://trello.com/b/3vVFiqOl/hospital-project](https://cloud.mongodb.com/v2/67f2c419d025250de41ef649#/clusters))
+- **Database:** [MongoDB Atlas Dashboard](https://cloud.mongodb.com/v2/67f2c419d025250de41ef649#/clusters)
