@@ -9,6 +9,10 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
+    phoneNumber: "",
+    profilePicture: "",
+    petType: "",
+    petName: "",
   });
   const [error, setError] = useState(null);
   const router = useRouter();
@@ -23,7 +27,7 @@ export default function RegisterPage() {
     try {
       const response = await axios.post("/api/auth/register", formData);
       if (response.status === 201) {
-        // On successful registration, redirect to login page
+        // On successful registration, redirect to the Login page
         router.push("/login");
       }
     } catch (err) {
@@ -74,6 +78,46 @@ export default function RegisterPage() {
           value={formData.password}
           onChange={handleChange}
           required
+        />
+
+        <label htmlFor="phoneNumber">Phone Number:</label>
+        <input
+          id="phoneNumber"
+          className="p-2 border rounded"
+          type="tel"
+          name="phoneNumber"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+        />
+
+        <label htmlFor="profilePicture">Profile Picture URL:</label>
+        <input
+          id="profilePicture"
+          className="p-2 border rounded"
+          type="text"
+          name="profilePicture"
+          value={formData.profilePicture}
+          onChange={handleChange}
+        />
+
+        <label htmlFor="petType">Pet Type:</label>
+        <input
+          id="petType"
+          className="p-2 border rounded"
+          type="text"
+          name="petType"
+          value={formData.petType}
+          onChange={handleChange}
+        />
+
+        <label htmlFor="petName">Pet Name:</label>
+        <input
+          id="petName"
+          className="p-2 border rounded"
+          type="text"
+          name="petName"
+          value={formData.petName}
+          onChange={handleChange}
         />
 
         <button
