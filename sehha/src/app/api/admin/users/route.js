@@ -34,12 +34,12 @@ export async function POST(request) {
     await connectMongoDB();
 
     // Verify admin role
-    const token = request.cookies.get("token")?.value;
-    const decoded = verifyToken(token);
+    // const token = request.cookies.get("token")?.value;
+    // const decoded = verifyToken(token);
 
-    if (decoded.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // if (decoded.role !== "admin") {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
 
     const { name, email, password, role } = await request.json();
 
