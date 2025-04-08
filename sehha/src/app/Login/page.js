@@ -234,7 +234,7 @@ export default function LoginPage() {
               <p className="text-[#C8C8C8]">
                 Don't have an account?
                 <a
-                  href="/register"
+                  href="/Register"
                   className="ml-1 font-medium text-[#FCAA29] hover:text-[#FC7729] transition-colors"
                 >
                   Create an account
