@@ -35,7 +35,7 @@ export default function BillingPage() {
       {orders.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-lg shadow-md">
           <p className="text-[#FC7729] text-xl font-semibold">No orders found.</p>
-          <p className="text-gray-600 mt-2">You haven't placed any orders yet.</p>
+          <p className="text-gray-600 mt-2">You  placed any orders yet.</p>
         </div>
       ) : (
         <div className="space-y-6">

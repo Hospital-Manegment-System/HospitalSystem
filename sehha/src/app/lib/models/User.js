@@ -1,31 +1,70 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
 
-const userSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String },
-  googleId: { type: String },
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  googleId: {
+    type: String,
+  },
   role: {
     type: String,
-    enum: ["patient", "doctor", "admin"], // Removed "nurse"
+    enum: ["patient", "doctor", "admin"],
     default: "patient",
   },
-  name: { type: String, required: true },
-  profilePicture: { type: String },
-  phoneNumber: { type: String, match: /^[0-9]{10}$/ },
-  address: { type: String },
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  profilePicture: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+    validate: {
+      validator: function (value) {
+        // Allow empty value or a string of exactly 10 digits
+        if (!value) return true;
+        return /^[0-9]{10}$/.test(value);
+      },
+      message: (props) =>
+        `${props.value} is not a valid phone number! It must be exactly 10 digits.`,
+    },
+  },
+  address: {
+    type: String,
+  },
   status: {
     type: String,
     enum: ["active", "suspended", "pending"],
     default: "active",
   },
-  // Patient-specific fields
-  petType: { type: String },
-  petName: { type: String },
-  // Doctor-specific fields
-  licenseNumber: { type: String },
-  qualifications: { type: [String] },
-  createdAt: { type: Date, default: Date.now },
+  petType: {
+    type: String,
+  },
+  petName: {
+    type: String,
+  },
+  licenseNumber: {
+    type: String,
+  },
+  qualifications: {
+    type: [String],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model("User", userSchema);
+// Use cached model if it exists (for hot-reloading), otherwise create a new model.
+export default mongoose.models.User || mongoose.model("User", userSchema);
