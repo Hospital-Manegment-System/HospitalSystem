@@ -69,7 +69,9 @@ export default function ProductDetailsPage() {
       console.log("Add to cart response:", responseData);
 
       if (!response.ok) {
-        throw new Error(`Failed to add to cart: ${responseData.error || "Unknown error"}`);
+        throw new Error(
+          `Failed to add to cart: ${responseData.error || "Unknown error"}`
+        );
       }
 
       setCart(responseData);
@@ -82,29 +84,46 @@ export default function ProductDetailsPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-gray-200 flex items-center justify-center">
-        <div className="text-center py-16 bg-white rounded-xl shadow-lg max-w-md w-full mx-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-16 w-16 text-amber-400 mx-auto mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-          <p className="text-orange-500 text-xl font-semibold">
-            Product not found.
-          </p>
-          <p className="text-gray-600 mt-2">
-            The product you are looking for does not exist.
-          </p>
-          <div className="mt-6">
+      <div className="min-h-screen bg-gradient-to-b from-[#FFFFFF] to-[#C8C8C8]">
+        <div className="container mx-auto p-6">
+          <div className="flex items-center justify-center mb-8 pt-4">
+            <div className="bg-[#FCAA29] p-3 rounded-full shadow-lg mr-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-white"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2c-5.33 4-8 8-8 12 0 4.42 3.58 8 8 8s8-3.58 8-8c0-4-2.67-8-8-12zm1 17.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.5-5.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5S10.67 8 11.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-1-3c-.83 0-1.5-.67-1.5-1.5S9.67 4 10.5 4s1.5.67 1.5 1.5S11.33 8 10.5 8z" />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold text-[#303241]">
+              Product Not Found
+            </h1>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-2xl mx-auto">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-20 w-20 text-[#FC7729] mx-auto mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 18a6 6 0 100-12 6 6 0 000 12z"
+              />
+            </svg>
+            <h2 className="text-2xl font-bold text-[#303241] mb-4">
+              We couldn't find this product
+            </h2>
+            <p className="text-gray-600 mb-8">
+              The product you are looking for does not exist or may have been
+              removed.
+            </p>
             <Link href="/animal-products">
               <button className="bg-orange-500 text-white py-2 px-6 rounded-lg font-medium hover:bg-amber-400 transition-colors duration-300">
                 Back to Products
@@ -131,9 +150,7 @@ export default function ProductDetailsPage() {
               <path d="M12 2c-5.33 4-8 8-8 12 0 4.42 3.58 8 8 8s8-3.58 8-8c0-4-2.67-8-8-12zm1 17.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.5-5.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5S10.67 8 11.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-1-3c-.83 0-1.5-.67-1.5-1.5S9.67 4 10.5 4s1.5.67 1.5 1.5S11.33 8 10.5 8z" />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold text-gray-800">
-            Product Details
-          </h1>
+          <h1 className="text-4xl font-bold text-[#303241]">Product Details</h1>
         </div>
 
         {/* Product Details Card */}

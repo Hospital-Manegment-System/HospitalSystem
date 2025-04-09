@@ -27,4 +27,4 @@ const doctorSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Doctor", doctorSchema);
+export default mongoose.models.Doctor || mongoose.model("Doctor", doctorSchema);
