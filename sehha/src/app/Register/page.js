@@ -27,7 +27,7 @@ export default function RegisterPage() {
     try {
       const response = await axios.post("/api/auth/register", formData);
       if (response.status === 201) {
-        router.push("/login");
+        router.push("/Login");
       }
     } catch (err) {
       if (err.response && err.response.data) {
@@ -416,7 +416,7 @@ export default function RegisterPage() {
                   <p className="text-[#C8C8C8] text-sm">
                     Already have an account?{" "}
                     <a
-                      href="/login"
+                      href="/Login"
                       className="text-[#FCAA29] font-medium hover:text-[#FC7729] transition-colors"
                     >
                       Sign in
