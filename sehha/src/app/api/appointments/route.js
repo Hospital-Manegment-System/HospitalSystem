@@ -1,0 +1,154 @@
+// // src/app/api/appointments/route.js - With simulation support
+// import { NextResponse } from "next/server";
+// import connectDB from "../../lib/mongodb";
+// import Appointment from "../../lib/models/Booking";
+
+// export async function POST(request) {
+//   try {
+//     // Enable simulation mode for testing without a live MongoDB
+//     const SIMULATION_MODE = process.env.SIMULATION_MODE === "true";
+
+//     if (!SIMULATION_MODE) {
+//       await connectDB();
+//     }
+
+//     const data = await request.json();
+
+//     // Validate required fields
+//     const requiredFields = [
+//       "patientId",
+//       "doctorId",
+//       "department",
+//       "date",
+//       "startTime",
+//       "endTime",
+//       "reason",
+//     ];
+//     for (const field of requiredFields) {
+//       if (!data[field]) {
+//         return NextResponse.json(
+//           {
+//             success: false,
+//             message: `Missing required field: ${field}`,
+//           },
+//           { status: 400 }
+//         );
+//       }
+//     }
+
+//     // In simulation mode, we just pretend to save
+//     if (SIMULATION_MODE) {
+//       // Add generated ID and created date to simulate DB
+//       const simulatedAppointment = {
+//         ...data,
+//         _id: Math.random().toString(36).substring(2, 15),
+//         createdAt: new Date().toISOString(),
+//         status: "pending",
+//       };
+
+//       return NextResponse.json(
+//         {
+//           success: true,
+//           message: "Appointment created successfully (simulation mode)",
+//           appointment: simulatedAppointment,
+//         },
+//         { status: 201 }
+//       );
+//     }
+
+//     // Real database save
+//     const appointment = new Appointment(data);
+//     await appointment.save();
+
+//     return NextResponse.json(
+//       {
+//         success: true,
+//         message: "Appointment created successfully",
+//         appointment,
+//       },
+//       { status: 201 }
+//     );
+//   } catch (error) {
+//     console.error("Error creating appointment:", error);
+//     return NextResponse.json(
+//       {
+//         success: false,
+//         message: "Failed to create appointment",
+//         error: error.message,
+//       },
+//       { status: 500 }
+//     );
+//   }
+// }
+import mongoose from "mongoose";
+import { NextResponse } from "next/server";
+import connectDB from "../../lib/config";
+import Appointment from "../../lib/models/Booking";
+
+export async function POST(request) {
+  try {
+    await connectDB(); // Connect to MongoDB
+
+    const data = await request.json();
+
+    // Validate required fields
+    const requiredFields = [
+      "patientId",
+      "doctorId",
+      "department",
+      "date",
+      "startTime",
+      "endTime",
+      "reason",
+    ];
+
+    for (const field of requiredFields) {
+      if (!data[field]) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Missing required field: ${field}`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate and convert doctorId to ObjectId
+    if (!mongoose.Types.ObjectId.isValid(data.doctorId)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid doctorId format",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Convert doctorId to ObjectId
+    data.doctorId = mongoose.Types.ObjectId(data.doctorId);
+
+    // Create a new appointment
+    const appointment = new Appointment(data);
+    await appointment.save();
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Appointment created successfully",
+        appointment,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating appointment:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to create appointment",
+        error: error.message,
+      },
+      { status: 500 }
+    );
+  }
+}
