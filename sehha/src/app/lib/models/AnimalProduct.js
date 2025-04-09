@@ -1,4 +1,4 @@
-// src/app/lib/models/AnimalProduct.js
+// sehha/src/lib/models/AnimalProduct.js
 import mongoose from "mongoose";
 
 const animalProductSchema = new mongoose.Schema({
@@ -6,28 +6,30 @@ const animalProductSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-    required: true,
-  },
   price: {
     type: Number,
-    required: true,
-  },
-  category: {
-    type: String,
     required: true,
   },
   image: {
     type: String,
     required: true,
   },
+  category: {
+    type: String,
+    required: true,
+  },
   stock: {
     type: Number,
     required: true,
+    default: 0,
+  },
+  description: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 
-const AnimalProduct = mongoose.models.AnimalProduct || mongoose.model("AnimalProduct", animalProductSchema);
-
-export default AnimalProduct;
+export default mongoose.models.AnimalProduct || mongoose.model("AnimalProduct", animalProductSchema, "animalproducts");
