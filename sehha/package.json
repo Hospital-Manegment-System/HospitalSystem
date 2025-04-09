@@ -22,11 +22,13 @@
     "next": "15.2.4",
     "peerjs": "^1.5.4",
     "react": "^19.0.0",
+    "react-datepicker": "^8.3.0",
     "react-dom": "^19.0.0",
+    "react-toastify": "^11.0.5",
+    "recharts": "^2.15.2",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "stripe": "^18.0.0",
-    "react-toastify": "^11.0.5"
+    "stripe": "^18.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

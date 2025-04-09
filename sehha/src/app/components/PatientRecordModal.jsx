@@ -155,16 +155,31 @@ export default function PatientRecordModal({
   //       console.error("Error submitting form:", error);
   //     }
   //   };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     // Just pass formData to parent, don't call axios here
+  //     onSubmit(formData);
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Just pass formData to parent, don't call axios here
-      onSubmit(formData);
+      const dataToSubmit = {
+        ...formData,
+        _id: initialData?._id, // ✅ Include record ID if editing
+      };
+
+      onSubmit(dataToSubmit);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
+
   if (!isOpen) return null;
 
   return (

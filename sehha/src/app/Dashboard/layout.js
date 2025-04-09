@@ -48,6 +48,22 @@ export default async function DashboardLayout({ children }) {
                 Patient Records
               </a>
             </li>
+            <li>
+              <a
+                href="/Dashboard/Analytics"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded bg-gray-200"
+              >
+                Analytics
+              </a>
+            </li>
+            <li>
+              <a
+                href="/Dashboard/TestData"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded"
+              >
+                Test Data
+              </a>
+            </li>
           </ul>
         </nav>
       </div>
