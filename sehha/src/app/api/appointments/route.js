@@ -82,12 +82,12 @@
 // }
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
-import connectDB from "../../lib/config";
+import connectMongoDB from "../../lib/config";
 import Appointment from "../../lib/models/Booking";
 
 export async function POST(request) {
   try {
-    await connectDB(); // Connect to MongoDB
+    await connectMongoDB(); // Connect to MongoDB
 
     const data = await request.json();
 

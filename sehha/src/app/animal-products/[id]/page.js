@@ -73,7 +73,9 @@ export default function ProductDetailPage({ params }) {
       console.log("Add to cart response:", responseData);
 
       if (!response.ok) {
-        throw new Error(`Failed to add to cart: ${responseData.error || "Unknown error"}`);
+        throw new Error(
+          `Failed to add to cart: ${responseData.error || "Unknown error"}`
+        );
       }
 
       setCart(responseData);
@@ -125,7 +127,8 @@ export default function ProductDetailPage({ params }) {
               We couldn't find this product
             </h2>
             <p className="text-gray-600 mb-8">
-              The product you are looking for does not exist or may have been removed.
+              The product you are looking for does not exist or may have been
+              removed.
             </p>
             <Link href="/animal-products">
               <button className="bg-[#FCAA29] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#FC7729] transition-colors duration-300">
@@ -163,9 +166,7 @@ export default function ProductDetailPage({ params }) {
               <path d="M12 2c-5.33 4-8 8-8 12 0 4.42 3.58 8 8 8s8-3.58 8-8c0-4-2.67-8-8-12zm1 17.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.5-5.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5S10.67 8 11.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-1-3c-.83 0-1.5-.67-1.5-1.5S9.67 4 10.5 4s1.5.67 1.5 1.5S11.33 8 10.5 8z" />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold text-[#303241]">
-            Product Details
-          </h1>
+          <h1 className="text-4xl font-bold text-[#303241]">Product Details</h1>
         </div>
 
         <div className="mb-6">

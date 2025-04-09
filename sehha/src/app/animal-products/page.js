@@ -68,7 +68,9 @@ export default function AnimalProductsPage() {
       console.log("Add to cart response:", responseData);
 
       if (!response.ok) {
-        throw new Error(`Failed to add to cart: ${responseData.error || "Unknown error"}`);
+        throw new Error(
+          `Failed to add to cart: ${responseData.error || "Unknown error"}`
+        );
       }
 
       setCart(responseData);
@@ -101,7 +103,8 @@ export default function AnimalProductsPage() {
         <div className="max-w-xl mx-auto mb-6">
           <Link href="/cart">
             <button className="bg-[#FC7729] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#FCAA29] transition-colors duration-300 flex items-center">
-              View Cart ({cart.items.reduce((total, item) => total + item.quantity, 0)})
+              View Cart (
+              {cart.items.reduce((total, item) => total + item.quantity, 0)})
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 ml-2"
