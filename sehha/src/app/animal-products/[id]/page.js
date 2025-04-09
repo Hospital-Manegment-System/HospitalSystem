@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 async function fetchProduct(id) {
   try {
-    const res = await fetch(`http://localhost:3001/api/animal-products/${id}`, {
+    const res = await fetch(`http://localhost:3000/api/animal-products/${id}`, {
       cache: "no-store",
     });
     if (!res.ok) {

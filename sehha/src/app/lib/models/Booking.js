@@ -12,18 +12,18 @@ const appointmentSchema = new mongoose.Schema({
     required: true,
   },
   department: { type: String, required: true },
-  date: { type: Date, required: true }, // تغيير من String إلى Date
-  startTime: { type: String, required: true }, // وقت البدء (مثل "14:30")
-  endTime: { type: String, required: true }, // وقت الانتهاء
+  date: { type: Date, required: true },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
   emergency: { type: Boolean, default: false },
-  reason: { type: String, required: true }, // سبب الزيارة
-  notes: { type: String }, // ملاحظات إضافية
+  reason: { type: String, required: true },
+  notes: { type: String },
   status: {
     type: String,
     enum: ["pending", "approved", "rejected", "completed", "cancelled"],
     default: "pending",
   },
-  prescription: { type: String }, // الوصفة الطبية (يمكن أن تكون نصًا أو رابطًا لملف)
+  prescription: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 

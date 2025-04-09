@@ -8,12 +8,12 @@ export async function PUT(request, { params }) {
     await connectMongoDB();
 
     // Verify admin role
-    const token = request.cookies.get("token")?.value;
-    const decoded = verifyToken(token);
+    // const token = request.cookies.get("token")?.value;
+    // const decoded = verifyToken(token);
 
-    if (decoded.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // if (decoded.role !== "admin") {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
 
     const { id } = params;
     const updateData = await request.json();
