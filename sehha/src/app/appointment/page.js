@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import DepartmentSelector from "@/app/components/DepartmentSelector";
 import DoctorSelector from "@/app/components/DoctorSelector";
@@ -11,16 +12,7 @@ import AppointmentForm from "@/app/components/AppointmentForm";
 export default function AppointmentPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [departments, setDepartments] = useState([
-    "Cardiology",
-    "Dermatology",
-    "Neurology",
-    "Orthopedics",
-    "Pediatrics",
-    "Psychiatry",
-    "Radiology",
-    "Surgery",
-  ]);
+  const [departments, setDepartments] = useState([]);
   const [formData, setFormData] = useState({
     patientId: "507f1f77bcf86cd799439011", // This would come from auth context in a real app
     doctorId: "",
@@ -50,6 +42,25 @@ export default function AppointmentPage() {
     setFormData({ ...formData, date, startTime, endTime });
     setStep(4);
   };
+  useEffect(() => {
+    // دالة لجلب الأقسام من API
+    const getDepartment = async () => {
+      try {
+        const response = await axios.get("/api/departments", {
+          withCredentials: true,
+        });
+        // بعد استلام البيانات، قم بتخزينها في الحالة
+        setDepartments(response.data);
+        console.log(response.data); // طباعة البيانات التي تم جلبها
+      } catch (err) {
+        setError("Failed to load departments");
+      } finally {
+        // هنا يمكن إضافة أي معالجة إضافية إذا لزم الأمر
+      }
+    };
+
+    getDepartment();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -58,31 +69,29 @@ export default function AppointmentPage() {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-const handleSubmit = (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setError("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
 
-  // طباعة البيانات بدلاً من إرسالها عبر fetch
-  console.log(formData); // هنا يمكنك تنفيذ العمليات المطلوبة على البيانات
+    // طباعة البيانات بدلاً من إرسالها عبر fetch
+    console.log(formData); // هنا يمكنك تنفيذ العمليات المطلوبة على البيانات
 
-  try {
-    // في حال كنت بحاجة فقط لمعالجة البيانات على المستوى المحلي
-    // على سبيل المثال، يمكن تنفيذ عملية معينة أو حفظ البيانات في محلية.
-    setSuccess("Appointment booked successfully!");
+    try {
+      // في حال كنت بحاجة فقط لمعالجة البيانات على المستوى المحلي
+      // على سبيل المثال، يمكن تنفيذ عملية معينة أو حفظ البيانات في محلية.
+      setSuccess("Appointment booked successfully!");
 
-    // تنفيذ أي عملية بعد إرسال البيانات، مثل إعادة التوجيه أو غيرها
-    setTimeout(() => {
-      router.push("/appointment"); // إعادة التوجيه إلى صفحة النجاح
-    }, 2000);
-  } catch (error) {
-    setError(error.message);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-
+      // تنفيذ أي عملية بعد إرسال البيانات، مثل إعادة التوجيه أو غيرها
+      setTimeout(() => {
+        router.push("/appointment"); // إعادة التوجيه إلى صفحة النجاح
+      }, 2000);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
