@@ -70,11 +70,13 @@ export default function BlogPage() {
         <div className="absolute inset-0 bg-[url('https://i.pinimg.com/736x/0b/e8/6d/0be86d8bb0de9dd4950b5d9def983390.jpg?height=800&width=1600')] bg-cover bg-center opacity-20"></div>
         <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">VetNova Blog</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              VetNova Blog
+            </h1>
             <p className="text-xl md:text-2xl mb-8">
-              Expert advice and insights for the health and happiness of your furry family members
+              Expert advice and insights for the health and happiness of your
+              furry family members
             </p>
-          
           </div>
         </div>
       </section>
@@ -84,7 +86,7 @@ export default function BlogPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post) => (
             <Link
-              href={`/blog/${post.slug}`}
+              href={`/medicalBlogs/${post.slug}`}
               key={post.id}
               className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
@@ -114,7 +116,12 @@ export default function BlogPage() {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
                   </svg>
                 </div>
               </div>
@@ -126,10 +133,12 @@ export default function BlogPage() {
       {/* CTA Section */}
       <section className="bg-[#303241] text-white py-16">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Have Questions About Your Pet's Health?</h2>
+          <h2 className="text-3xl font-bold mb-6">
+            Have Questions About Your Pet's Health?
+          </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Connect with professional veterinarians through secure appointments, live video calls, and real-time
-            messaging.
+            Connect with professional veterinarians through secure appointments,
+            live video calls, and real-time messaging.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-[#FC7729] text-white px-8 py-3 rounded-full font-medium hover:bg-opacity-90 transition-colors">
@@ -142,6 +151,6 @@ export default function BlogPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }
 
