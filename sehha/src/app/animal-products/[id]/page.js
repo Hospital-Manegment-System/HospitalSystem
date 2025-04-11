@@ -36,22 +36,34 @@ async function fetchCart(userId) {
 export default function ProductDetailsPage() {
   const [product, setProduct] = useState(null);
   const [cart, setCart] = useState({ items: [], totalAmount: 0 });
+  const [isLoading, setIsLoading] = useState(true); // حالة التحميل الجديدة
+  const [error, setError] = useState(null); // حالة الخطأ الجديدة
   const router = useRouter();
   const { id } = useParams();
   const userId = "guest"; // Replace with real user ID if using authentication
 
   useEffect(() => {
-    // Fetch product details
-    fetchProduct(id).then((data) => {
-      console.log("Fetched product:", data);
-      setProduct(data);
-    });
+    async function loadData() {
+      setIsLoading(true); // نبدأ التحميل
+      setError(null); // نرجع حالة الخطأ للوضع الافتراضي
 
-    // Fetch cart
-    fetchCart(userId).then((data) => {
-      console.log("Fetched cart:", data);
-      setCart(data);
-    });
+      try {
+        // Fetch product details
+        const productData = await fetchProduct(id);
+        console.log("Fetched product:", productData);
+        setProduct(productData);
+
+        // Fetch cart
+        const cartData = await fetchCart(userId);
+        console.log("Fetched cart:", cartData);
+        setCart(cartData);
+      } catch (err) {
+        setError("Failed to load product details. Please try again later.");
+      } finally {
+        setIsLoading(false); // ننهي التحميل
+      }
+    }
+    loadData();
   }, [id]);
 
   const addToCart = async (product) => {
@@ -82,6 +94,86 @@ export default function ProductDetailsPage() {
     }
   };
 
+  // حالة التحميل
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#FFFFFF] to-[#C8C8C8]">
+        <div className="container mx-auto p-6">
+          <div className="flex items-center justify-center mb-8 pt-4">
+            <div className="bg-[#FCAA29] p-3 rounded-full shadow-lg mr-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-white"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2c-5.33 4-8 8-8 12 0 4.42 3.58 8 8 8s8-3.58 8-8c0-4-2.67-8-8-12zm1 17.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.5-5.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5S10.67 8 11.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-1-3c-.83 0-1.5-.67-1.5-1.5S9.67 4 10.5 4s1.5.67 1.5 1.5S11.33 8 10.5 8z" />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold text-[#303241]">
+              Loading Product Details
+            </h1>
+          </div>
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading product details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // حالة الخطأ
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#FFFFFF] to-[#C8C8C8]">
+        <div className="container mx-auto p-6">
+          <div className="flex items-center justify-center mb-8 pt-4">
+            <div className="bg-[#FCAA29] p-3 rounded-full shadow-lg mr-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-white"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2c-5.33 4-8 8-8 12 0 4.42 3.58 8 8 8s8-3.58 8-8c0-4-2.67-8-8-12zm1 17.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.5-5.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5S10.67 8 11.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-1-3c-.83 0-1.5-.67-1.5-1.5S9.67 4 10.5 4s1.5.67 1.5 1.5S11.33 8 10.5 8z" />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold text-[#303241]">
+              Error Loading Product
+            </h1>
+          </div>
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-2xl mx-auto">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-20 w-20 text-[#FC7729] mx-auto mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <h2 className="text-2xl font-bold text-[#303241] mb-4">
+              Failed to load product
+            </h2>
+            <p className="text-gray-600 mb-8">{error}</p>
+            <Link href="/animal-products">
+              <button className="bg-orange-500 text-white py-2 px-6 rounded-lg font-medium hover:bg-amber-400 transition-colors duration-300">
+                Back to Products
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // حالة المنتج غير موجود
   if (!product) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#FFFFFF] to-[#C8C8C8]">
@@ -135,6 +227,7 @@ export default function ProductDetailsPage() {
     );
   }
 
+  // عرض تفاصيل المنتج
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -164,7 +257,7 @@ export default function ProductDetailsPage() {
                 className="w-full h-full object-cover min-h-96"
               />
             </div>
-            
+
             {/* Product Info */}
             <div className="p-8">
               <h2 className="text-3xl font-bold text-gray-800 mb-4">
@@ -178,7 +271,7 @@ export default function ProductDetailsPage() {
               <p className="text-gray-700 mb-6 leading-relaxed">
                 {product.description || "No description available."}
               </p>
-              
+
               <div className="flex items-center mb-8">
                 <p className="text-3xl font-semibold text-amber-400">
                   ${product.price}
@@ -191,7 +284,7 @@ export default function ProductDetailsPage() {
                   )}
                 </div>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
                 {product.stock > 0 ? (
                   <button
@@ -237,18 +330,6 @@ export default function ProductDetailsPage() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-16 py-6 text-center">
-          <div className="inline-block px-6 py-2 bg-gray-800 text-white rounded-full mb-4">
-            <span className="text-amber-400 font-bold">Pet</span>
-            <span className="text-white font-bold">Care</span>
-            <span className="text-orange-500 font-bold">Plus</span>
-          </div>
-          <p className="text-gray-700 text-sm">
-            Providing the best medical products for your beloved pets
-          </p>
         </div>
       </div>
     </div>

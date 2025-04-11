@@ -6,7 +6,7 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1D1D1D] text-[#C8C8C8] pt-16 pb-6">
+    <footer className="bg-[#303241] text-[#C8C8C8] pt-16 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10">
           <div>
