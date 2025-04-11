@@ -14,6 +14,7 @@ export default function DoctorSelector({ department, onSelect, onBack }) {
 
         // Fetch doctors from the real API endpoint
         const response = await fetch(`/api/doctors?department=${department}`);
+        console.log(response.data);
 
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`);
@@ -73,6 +74,7 @@ export default function DoctorSelector({ department, onSelect, onBack }) {
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {console.log(doctors)}
           {doctors.map((doctor) => {
             // Get doctor name or default to an ID-based name if user info is missing
             const doctorName =
@@ -83,7 +85,7 @@ export default function DoctorSelector({ department, onSelect, onBack }) {
             return (
               <div
                 key={doctor._id}
-                onClick={() => onSelect(doctor._id)}
+                onClick={() => onSelect(doctor.userId._id)}
                 className="border border-gray-200 rounded-lg hover:border-blue-400 hover:shadow-md transition-all cursor-pointer"
               >
                 <div className="p-4 flex flex-col h-full">
