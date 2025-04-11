@@ -123,12 +123,26 @@ export default function DateTimeSelector({ doctorId, onSelect, onBack }) {
     setSelectedSlot(slot);
   };
 
+  // const handleContinue = () => {
+  //   if (selectedDate && selectedSlot) {
+  //     onSelect(selectedDate, selectedSlot.start, selectedSlot.end);
+  //   }
+  // };
+
+  //////////////ali
   const handleContinue = () => {
     if (selectedDate && selectedSlot) {
-      onSelect(selectedDate, selectedSlot.start, selectedSlot.end);
+      // تنسيق التاريخ كما يفعل الإدمن (بدون وقت)
+      const formattedDate = new Date(selectedDate);
+      formattedDate.setHours(0, 0, 0, 0); // إعادة الضبط لمنتصف الليل
+
+      onSelect(
+        formattedDate.toISOString(), // التاريخ الجديد
+        selectedSlot.start,
+        selectedSlot.end
+      );
     }
   };
-
   if (loading) {
     return (
       <div className="text-center py-12">

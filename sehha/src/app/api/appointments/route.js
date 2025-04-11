@@ -160,12 +160,19 @@ import Appointment from "../../lib/models/Appointment";
 export async function POST(request) {
   try {
     await connectMongoDB();
-    
+
     // Parse the request body
     const data = await request.json();
-    
+
     // Validate required fields
-    const requiredFields = ['doctorId', 'department', 'date', 'startTime', 'endTime', 'reason'];
+    const requiredFields = [
+      "doctorId",
+      "department",
+      "date",
+      "startTime",
+      "endTime",
+      "reason",
+    ];
     for (const field of requiredFields) {
       if (!data[field]) {
         return NextResponse.json(
@@ -174,30 +181,37 @@ export async function POST(request) {
         );
       }
     }
-    
+
     // Create a new appointment
     const appointment = await Appointment.create({
       patientId: data.patientId, // Assuming patientId is passed in the request body
       doctorId: data.doctorId,
       department: data.department,
       date: new Date(data.date),
+      createdAt: new Date(), // إضافة طابع زمني
       startTime: data.startTime,
       endTime: data.endTime,
       reason: data.reason,
       notes: data.notes || "",
       emergency: data.emergency || false,
     });
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: "Appointment booked successfully",
-      appointment
-    }, { status: 201 });
-    
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Appointment booked successfully",
+        appointment,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error booking appointment:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to book appointment", error: error.message },
+      {
+        success: false,
+        message: "Failed to book appointment",
+        error: error.message,
+      },
       { status: 500 }
     );
   }
@@ -207,23 +221,23 @@ export async function POST(request) {
 export async function GET(request) {
   try {
     await connectMongoDB();
-    
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
-    
+
     // Build query based on provided patientId or doctorId in the request
     const patientId = searchParams.get("patientId");
     const doctorId = searchParams.get("doctorId");
-    
+
     const query = {};
     if (patientId) query.patientId = patientId;
     if (doctorId) query.doctorId = doctorId;
-    
+
     // Add status filter if provided
     if (status) {
       query.status = status;
     }
-    
+
     // Get appointments and populate related information
     const appointments = await Appointment.find(query)
       .populate("doctorId", "userId")
@@ -231,17 +245,20 @@ export async function GET(request) {
         path: "doctorId",
         populate: {
           path: "userId",
-          select: "name"
-        }
+          select: "name",
+        },
       })
       .sort({ date: 1, startTime: 1 });
-    
+
     return NextResponse.json({ success: true, appointments });
-    
   } catch (error) {
     console.error("Error fetching appointments:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to fetch appointments", error: error.message },
+      {
+        success: false,
+        message: "Failed to fetch appointments",
+        error: error.message,
+      },
       { status: 500 }
     );
   }
