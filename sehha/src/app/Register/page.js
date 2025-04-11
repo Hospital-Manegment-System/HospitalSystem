@@ -13,6 +13,7 @@ export default function RegisterPage() {
     profilePicture: "",
     petType: "",
     petName: "",
+    petAge: "", // pet age as a string initially
   });
   const [error, setError] = useState(null);
   const router = useRouter();
@@ -24,8 +25,17 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+
+    // Convert petAge to a number if not empty
+    const payload = {
+      ...formData,
+      petAge: formData.petAge !== "" ? Number(formData.petAge) : undefined,
+    };
+
+    console.log("Register payload:", payload); // <--- Debug line
+
     try {
-      const response = await axios.post("/api/auth/register", formData);
+      const response = await axios.post("/api/auth/register", payload);
       if (response.status === 201) {
         router.push("/login");
       }
@@ -239,7 +249,7 @@ export default function RegisterPage() {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a1 1 0 01-1 1h-1C9.716 21 3 14.284 3 6V5z"
                           />
                         </svg>
                       </div>
@@ -314,22 +324,6 @@ export default function RegisterPage() {
                       Pet Type
                     </label>
                     <div className="relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 text-[#C8C8C8]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758a3 3 0 10-4.243-4.243 3 3 0 004.243 4.243z"
-                          />
-                        </svg>
-                      </div>
                       <input
                         id="petType"
                         className="block w-full pl-10 pr-3 py-3 bg-[#1D1D1D] border border-[#1D1D1D] rounded-lg focus:ring-2 focus:ring-[#FCAA29] focus:border-transparent text-[#FFFFFF] placeholder-[#C8C8C8] focus:outline-none"
@@ -350,22 +344,6 @@ export default function RegisterPage() {
                       Pet Name
                     </label>
                     <div className="relative rounded-md shadow-sm">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 text-[#C8C8C8]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                          />
-                        </svg>
-                      </div>
                       <input
                         id="petName"
                         className="block w-full pl-10 pr-3 py-3 bg-[#1D1D1D] border border-[#1D1D1D] rounded-lg focus:ring-2 focus:ring-[#FCAA29] focus:border-transparent text-[#FFFFFF] placeholder-[#C8C8C8] focus:outline-none"
@@ -373,6 +351,27 @@ export default function RegisterPage() {
                         name="petName"
                         placeholder="Buddy, Luna, Max, etc."
                         value={formData.petName}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+
+                  {/* New field for Pet Age */}
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="petAge"
+                      className="block text-sm font-medium text-[#FFFFFF]"
+                    >
+                      Pet Age
+                    </label>
+                    <div className="relative rounded-md shadow-sm">
+                      <input
+                        id="petAge"
+                        className="block w-full pl-10 pr-3 py-3 bg-[#1D1D1D] border border-[#1D1D1D] rounded-lg focus:ring-2 focus:ring-[#FCAA29] focus:border-transparent text-[#FFFFFF] placeholder-[#C8C8C8] focus:outline-none"
+                        type="number"
+                        name="petAge"
+                        placeholder="Enter pet age"
+                        value={formData.petAge}
                         onChange={handleChange}
                       />
                     </div>
@@ -416,7 +415,7 @@ export default function RegisterPage() {
                   <p className="text-[#C8C8C8] text-sm">
                     Already have an account?{" "}
                     <a
-                      href="/login"
+                      href="/Login"
                       className="text-[#FCAA29] font-medium hover:text-[#FC7729] transition-colors"
                     >
                       Sign in
@@ -434,10 +433,6 @@ export default function RegisterPage() {
             </form>
           </div>
         </div>
-
-        <p className="mt-6 text-center text-xs text-[#C8C8C8]">
-          © 2025 Your Company. All rights reserved.
-        </p>
       </div>
     </div>
   );

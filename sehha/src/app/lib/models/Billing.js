@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+// src/app/lib/models/Billing.js
+import mongoose from "mongoose";
 
 const billingSchema = new mongoose.Schema(
   {
@@ -11,10 +12,10 @@ const billingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
     },
-    amount: { type: Number, required: true }, // المبلغ الإجمالي
+    amount: { type: Number, required: true },
     items: [
       {
-        description: { type: String }, // الخدمة (كشفية، جراحة، تحاليل، إلخ)
+        description: { type: String },
         cost: { type: Number },
       },
     ],
@@ -23,12 +24,14 @@ const billingSchema = new mongoose.Schema(
       enum: ["pending", "paid", "failed", "refunded"],
       default: "pending",
     },
-    paymentMethod: { type: String }, // Stripe, PayPal, نقدي، إلخ
-    transactionId: { type: String }, // رقم المعاملة إذا كان الدفع إلكترونيًا
+    paymentMethod: { type: String },
+    transactionId: { type: String },
     issuedAt: { type: Date, default: Date.now },
-    dueDate: { type: Date }, // تاريخ الاستحقاق
+    dueDate: { type: Date },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Billing", billingSchema);
+const Billing = mongoose.models.Billing || mongoose.model("Billing", billingSchema);
+
+export default Billing;

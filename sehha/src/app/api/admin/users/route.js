@@ -7,9 +7,8 @@ export async function GET(request) {
   try {
     await connectMongoDB();
 
-    console.log(request.cookies);
+    // console.log(request.cookies);
 
-    // Verify admin role
     // const token = request.cookies.get("token")?.value;
     // const decoded = verifyToken(token);
 
@@ -28,18 +27,46 @@ export async function GET(request) {
     );
   }
 }
+// export async function GET(request) {
+//   try {
+//     await connectMongoDB();
 
+//     // Get cookie header from the request
+//     console.log(request.cookies.token);
+
+//     // console.log(token);
+//     if (!token) {
+//       throw new Error("No token provided");
+//     }
+
+//     const decoded = verifyToken(token);
+
+//     if (decoded.role !== "admin") {
+//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//     }
+
+//     const users = await User.find({}).select("-password -googleId");
+
+//     return NextResponse.json(users);
+//   } catch (error) {
+//     console.error("Error fetching users:", error);
+//     return NextResponse.json(
+//       { error: error.message || "Internal server error" },
+//       { status: 500 }
+//     );
+//   }
+// }
 export async function POST(request) {
   try {
     await connectMongoDB();
 
     // Verify admin role
-    const token = request.cookies.get("token")?.value;
-    const decoded = verifyToken(token);
+    // const token = request.cookies.get("token")?.value;
+    // const decoded = verifyToken(token);
 
-    if (decoded.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // if (decoded.role !== "admin") {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
 
     const { name, email, password, role } = await request.json();
 

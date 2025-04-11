@@ -107,7 +107,7 @@ export default function UserTable({ users: initialUsers }) {
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-900">
           {users.map((user) => (
             <tr key={user._id}>
               <td className="px-6 py-4 whitespace-nowrap">

@@ -7,8 +7,7 @@ export async function POST(request) {
   try {
     await connectMongoDB();
 
-
-    // Destructure additional fields from the request body
+    // Parse the request body
     const {
       name,
       email,
@@ -17,8 +16,12 @@ export async function POST(request) {
       profilePicture,
       petType,
       petName,
+      petAge, // Possibly a string coming in from the frontend
     } = await request.json();
 
+    // Convert petAge to a number if it's provided and not an empty string.
+    const parsedPetAge =
+      petAge !== undefined && petAge !== "" ? Number(petAge) : undefined;
 
     // 1. Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -32,20 +35,17 @@ export async function POST(request) {
     // 2. Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-
-    // 3. Create new user including the extra fields
-
+    // 3. Create new user including the extra fields, using the parsed petAge
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
-
       phoneNumber,
       profilePicture,
       petType,
       petName,
+      petAge: parsedPetAge, // Save the numeric pet age here
       // role defaults to "patient" per your model
-
     });
     await newUser.save();
 
