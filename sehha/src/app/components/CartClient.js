@@ -211,17 +211,6 @@ export default function CartClient({ initialCart, userId }) {
             </div>
           </div>
         )}
-
-        <footer className="mt-16 p-6 text-center">
-          <div className="inline-block px-8 py-3 bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-full mb-4 shadow-lg">
-            <span className="text-orange-400 font-bold">Pet</span>
-            <span className="text-white font-bold">Care</span>
-            <span className="text-orange-500 font-bold">Plus</span>
-          </div>
-          <p className="text-blue-800 text-sm">
-            Providing premium medical products for your beloved pets since 2020
-          </p>
-        </footer>
       </div>
     </div>
   );
