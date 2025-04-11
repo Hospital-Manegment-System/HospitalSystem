@@ -259,6 +259,49 @@ export async function POST(request) {
   try {
     await connectMongoDB();
 
+    // Parse the request body
+    const data = await request.json();
+
+    // Validate required fields
+    const requiredFields = [
+      "doctorId",
+      "department",
+      "date",
+      "startTime",
+      "endTime",
+      "reason",
+    ];
+    for (const field of requiredFields) {
+      if (!data[field]) {
+        return NextResponse.json(
+          { success: false, message: `Missing required field: ${field}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Create a new appointment
+    const appointment = await Appointment.create({
+      patientId: data.patientId, // Assuming patientId is passed in the request body
+      doctorId: data.doctorId,
+      department: data.department,
+      date: new Date(data.date),
+      startTime: data.startTime,
+      endTime: data.endTime,
+      reason: data.reason,
+      notes: data.notes || "",
+      emergency: data.emergency || false,
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Appointment booked successfully",
+        appointment,
+      },
+      { status: 201 }
+    );
+
     // Extract user ID from authentication token
     try {
       const userId = extractUserIdFromToken(request);
@@ -333,6 +376,36 @@ export async function POST(request) {
 export async function GET(request) {
   try {
     await connectMongoDB();
+
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get("status");
+
+    // Build query based on provided patientId or doctorId in the request
+    const patientId = searchParams.get("patientId");
+    const doctorId = searchParams.get("doctorId");
+
+    const query = {};
+    if (patientId) query.patientId = patientId;
+    if (doctorId) query.doctorId = doctorId;
+
+    // Add status filter if provided
+    if (status) {
+      query.status = status;
+    }
+
+    // Get appointments and populate related information
+    const appointments = await Appointment.find(query)
+      .populate("doctorId", "userId")
+      .populate({
+        path: "doctorId",
+        populate: {
+          path: "userId",
+          select: "name",
+        },
+      })
+      .sort({ date: 1, startTime: 1 });
+
+    return NextResponse.json({ success: true, appointments });
 
     try {
       // Get authenticated user ID

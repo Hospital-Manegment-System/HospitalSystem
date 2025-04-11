@@ -54,6 +54,7 @@ const userSchema = new mongoose.Schema({
   petName: {
     type: String,
   },
+  petAge: { type: Number }, // The key for storing petAge as a Number
   licenseNumber: {
     type: String,
   },
@@ -66,5 +67,5 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// Use cached model if it exists (for hot-reloading), otherwise create a new model.
+// Use a cached model if it exists (for hot-reloading in dev), otherwise create a new model.
 export default mongoose.models.User || mongoose.model("User", userSchema);
