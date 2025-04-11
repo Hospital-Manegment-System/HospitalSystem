@@ -26,14 +26,6 @@ export default async function DashboardLayout({ children }) {
           <ul className="space-y-2">
             <li>
               <a
-                href="/Dashboard"
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded"
-              >
-                Overview
-              </a>
-            </li>
-            <li>
-              <a
                 href="/Dashboard/UserManagement"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded"
               >
@@ -62,6 +54,14 @@ export default async function DashboardLayout({ children }) {
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded"
               >
                 Test Data
+              </a>
+            </li>
+            <li>
+              <a
+                href="/Dashboard/Schedules"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded"
+              >
+                Doctor Schedules
               </a>
             </li>
           </ul>
