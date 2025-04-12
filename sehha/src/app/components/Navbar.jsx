@@ -174,12 +174,13 @@ const commonNavLinks = [
   { name: "Contact Us", path: "/ContactUs" },
   { name: "Pet Products", path: "/animal-products" },
   { name: "Appointments", path: "/appointment" },
+  // { name: "Patient Record", path: "/PatientRecord" },
 ];
 
 // Additional links for different roles
 const patientLinks = [];
 
-const doctorLinks = [{ name: "Doctors", path: "/doctors" }];
+const doctorLinks = [{ name: "Patient Record", path: "/PatientRecord" }];
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -316,7 +317,7 @@ export default function Navbar() {
                       />
                     </svg>
                     <span className="text-sm font-medium">
-                      {user.email || "Profile"}
+                      {user.name }
                     </span>
                   </button>
                   <div className="absolute right-0 w-48 mt-2 origin-top-right bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -337,11 +338,11 @@ export default function Navbar() {
                     </div>
                   </div>
                 </div>
-                {user.role && (
+                {/* {user.role && (
                   <div className="bg-[#F2C94C] px-2 py-1 rounded-md text-xs font-bold text-[#1D1D1D]">
                     {user.role}
                   </div>
-                )}
+                )} */}
               </div>
             )}
           </div>
@@ -446,14 +447,14 @@ export default function Navbar() {
                       />
                     </svg>
                     <span className="text-[#FFFFFF]">
-                      {user.email || "Profile"}
+                      {user.name || "Profile"}
                     </span>
                   </div>
-                  {user.role && (
+                  {/* {user.role && (
                     <span className="bg-[#F2C94C] px-2 py-1 rounded-md text-xs font-bold text-[#1D1D1D]">
                       {user.role}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <Link
                   href="/profile"
