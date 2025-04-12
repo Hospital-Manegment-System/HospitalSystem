@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import {
   Shield,
   FileText,
@@ -55,42 +56,37 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// ------------------------------------------------
-// UPDATED HOME COMPONENT
-// ------------------------------------------------
 export default function Home() {
-  // ------------------------------------------------
-  // 1) Remove all the old static article arrays
-  // ------------------------------------------------
-
-  // Manages the open/close state of the article popup
+  // States for articles
   const [selectedArticle, setSelectedArticle] = useState(null);
-
-  // Manages fetched articles
   const [fetchedArticles, setFetchedArticles] = useState([]);
   const [featuredArticle, setFeaturedArticle] = useState(null);
-
-  // Loading & error states for articles
   const [articlesLoading, setArticlesLoading] = useState(false);
   const [articlesError, setArticlesError] = useState(null);
 
-  // ------------------------------------------------
-  // 2) Fetch articles from /api/articles
-  // ------------------------------------------------
+  // States for products
+  const [products, setProducts] = useState([]);
+  const [shopLoading, setShopLoading] = useState(false);
+  const [shopError, setShopError] = useState(null);
+
+  // Next.js Router for navigation
+  const router = useRouter();
+  // Set a default userId; adjust as needed
+  const userId = "guest";
+
+  // Fetch articles from /api/articles
   useEffect(() => {
     async function fetchArticles() {
       try {
         setArticlesLoading(true);
         const response = await axios.get("/api/articles");
-        // Assuming your API returns an array of articles:
         const allArticles = response.data || [];
         if (allArticles.length > 0) {
-          // Use the first as featured, the rest as a normal list
           setFeaturedArticle(allArticles[0]);
           setFetchedArticles(allArticles.slice(1));
         } else {
-          setFetchedArticles([]);
           setFeaturedArticle(null);
+          setFetchedArticles([]);
         }
         setArticlesError(null);
       } catch (error) {
@@ -104,37 +100,11 @@ export default function Home() {
     fetchArticles();
   }, []);
 
-  // ------------------------------------------------
-  // 3) Rest of your existing states & logic
-  // ------------------------------------------------
-  const closePopup = () => {
-    setSelectedArticle(null);
-    document.body.style.overflow = "auto";
-  };
-
-  const openArticlePopup = (article) => {
-    setSelectedArticle(article);
-    // Prevent background scroll
-    document.body.style.overflow = "hidden";
-  };
-
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-
-  const toggleCart = () => {
-    setIsCartOpen(!isCartOpen);
-  };
-
-  // ------------------------------------------------
-  // DYNAMIC SHOP FETCHING (unchanged from your code)
-  // ------------------------------------------------
-  const [products, setProducts] = useState([]);
-  const [shopLoading, setShopLoading] = useState(false);
-  const [shopError, setShopError] = useState(null);
-
+  // Fetch products from /api/animal-products
   useEffect(() => {
     async function fetchProducts() {
       try {
+        setShopLoading(true);
         const response = await axios.get(
           "http://localhost:3000/api/animal-products"
         );
@@ -146,14 +116,40 @@ export default function Home() {
       } catch (err) {
         console.error(err);
         setProducts([]);
+      } finally {
+        setShopLoading(false);
       }
     }
     fetchProducts();
   }, []);
 
-  // ------------------------------------------------
-  // Example “Features” array, etc. remain unchanged
-  // ------------------------------------------------
+  // Function to open and close the article popup
+  const closePopup = () => {
+    setSelectedArticle(null);
+    document.body.style.overflow = "auto";
+  };
+
+  const openArticlePopup = (article) => {
+    setSelectedArticle(article);
+    // Prevent background scrolling when popup is active
+    document.body.style.overflow = "hidden";
+  };
+
+  // Updated addToCart function: posts product data to the cart endpoint and navigates directly to the cart page
+  const addToCart = async (product) => {
+    try {
+      console.log("Adding product to cart:", product);
+      const response = await axios.post("/api/cart", { userId, product });
+      console.log("Add to cart response:", response.data);
+      // Navigate directly to the cart page once the product is added
+      router.push("/cart");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert(`Failed to add to cart: ${error.message}`);
+    }
+  };
+
+  // Example Features array remains unchanged
   const features = [
     {
       icon: <Stethoscope size={28} />,
@@ -205,6 +201,7 @@ export default function Home() {
     },
   ];
 
+  // Example userTypes array remains unchanged
   const userTypes = [
     {
       icon: <Dog size={32} />,
@@ -256,9 +253,6 @@ export default function Home() {
     },
   ];
 
-  // ------------------------------------------------
-  // 4) Render everything
-  // ------------------------------------------------
   return (
     <main className="bg-[#1D1D1D] text-[#FFFFFF]">
       {/* Hero Section with Video Background */}
@@ -273,38 +267,32 @@ export default function Home() {
           <source src="/videos/hero.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-
-        {/* Overlay */}
         <div className="absolute top-0 left-0 w-full h-full bg-[#000000]/60 z-10" />
-
-        {/* Content */}
         <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-4">
           <div className="animate-fadeIn">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 text-[#FFFFFF] drop-shadow-lg">
-              <span className="text-[#FCAA29]">PawCare</span> Animal Hospital
+              <span className="text-[#FCAA29]">VetNova</span> Animal Hospital
             </h1>
             <p className="text-lg md:text-xl mb-8 text-[#FFFFFF] max-w-2xl">
               Expert veterinary care and premium pet medications for your
               beloved companions
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#book-now"
+              <Link
+                href="appointment"
                 className="bg-[#FC7729] hover:bg-[#FCAA29] text-[#FFFFFF] px-8 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105"
               >
                 Book Appointment
-              </a>
-              <a
-                href="#shop"
+              </Link>
+              <Link
+                href="animal-products"
                 className="bg-[#303241] hover:bg-[#FCAA29] text-[#FFFFFF] border border-[#FCAA29] px-8 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105"
               >
                 Shop Medicines
-              </a>
+              </Link>
             </div>
           </div>
         </div>
-
-        {/* Scroll Down Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
           <svg
             className="w-6 h-6 text-[#FFFFFF]"
@@ -315,7 +303,7 @@ export default function Home() {
             viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
       </div>
@@ -335,7 +323,6 @@ export default function Home() {
               healthy, happy, and thriving throughout every stage of their lives
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
               <div
@@ -357,108 +344,115 @@ export default function Home() {
       </section>
 
       {/* Shop Section (Dynamic) */}
-      <section className="py-20 bg-[#ffffff]" id="shop">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-fadeIn">
-            <div className="inline-block px-4 py-1 rounded-full bg-[#FC7729]/20 text-[#FC7729] font-medium text-sm mb-4">
-              PET PHARMACY
+      <section
+        className="py-20 bg-gradient-to-b from-white to-gray-200"
+        id="shop"
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header with Icon */}
+          <div className="flex items-center justify-center mb-10">
+            <div className="bg-amber-400 p-3 rounded-full shadow-lg mr-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-white"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2c-5.33 4-8 8-8 12 0 4.42 3.58 8 8 8s8-3.58 8-8c0-4-2.67-8-8-12zm1 17.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.5-5.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5S10.67 8 11.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-1-3c-.83 0-1.5-.67-1.5-1.5S9.67 4 10.5 4s1.5.67 1.5 1.5S11.33 8 10.5 8z" />
+              </svg>
             </div>
-            <h2 className="text-4xl font-bold text-[#000000] mb-4">
-              Quality Pet Medications &amp; Supplies
-            </h2>
-            <p className="text-lg text-[#000000] max-w-2xl mx-auto">
-              Browse our wide selection of veterinary-approved medications,
-              supplements, and specialty pet products
-            </p>
+            <h1 className="text-4xl font-bold text-gray-800">
+              Quality Pet Medications & Supplies
+            </h1>
           </div>
 
-          {/* Loading or Error States */}
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto text-center mb-12">
+            Browse our wide selection of veterinary-approved medications,
+            supplements, and specialty pet products
+          </p>
+
           {shopLoading ? (
-            <div className="text-center text-[#C8C8C8]">
-              Loading products...
-            </div>
+            <div className="text-center text-gray-500">Loading products...</div>
           ) : shopError ? (
             <div className="text-center text-red-400">{shopError}</div>
           ) : products.length === 0 ? (
-            <div className="text-center text-[#C8C8C8]">No products found.</div>
+            <div className="text-center text-gray-500">No products found.</div>
           ) : (
-            // Product Grid
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.map((product, index) => {
-                const ratingValue = Math.floor(product.rating || 0);
-                return (
-                  <div
-                    key={product._id || index}
-                    className="bg-[#303241] rounded-xl overflow-hidden shadow-lg border border-[#C8C8C8]/10 transition-all duration-300 hover:shadow-xl hover:border-[#FC7729]/20 group animate-fadeIn"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="relative">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                      {product.badge && (
-                        <div className="absolute top-2 right-2 bg-[#FC7729] text-white text-xs px-2 py-1 rounded-full">
-                          {product.badge}
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <div className="text-[#C8C8C8] text-sm mb-1">
-                        {product.category}
-                      </div>
-                      <h3 className="text-lg font-semibold text-[#FFFFFF] mb-2">
-                        {product.name}
-                      </h3>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-[#FCAA29] font-bold">
-                          {product.price}
-                        </span>
-                        <div className="flex items-center">
-                          <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                              <svg
-                                key={i}
-                                className={`w-4 h-4 ${
-                                  i < ratingValue
-                                    ? "text-[#FCAA29]"
-                                    : "text-[#C8C8C8]"
-                                }`}
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                              </svg>
-                            ))}
-                          </div>
-                          <span className="text-[#C8C8C8] text-xs ml-1">
-                            {product.rating?.toFixed(1) || "0.0"}
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => {
-                          setCartItems([...cartItems, product]);
-                          setIsCartOpen(true);
-                        }}
-                        className="w-full bg-[#FC7729] hover:bg-[#FCAA29] text-white py-2 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2"
-                      >
-                        <ShoppingCart size={16} />
-                        Add to Cart
-                      </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product, index) => (
+                <div
+                  key={product._id || index}
+                  className="bg-white rounded-xl overflow-hidden shadow-lg transform transition-transform hover:-translate-y-2 duration-300"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="relative">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-64 object-cover"
+                    />
+                    <div className="absolute top-0 right-0 bg-amber-400 text-white px-3 py-1 rounded-bl-lg font-semibold">
+                      {product.price}
                     </div>
                   </div>
-                );
-              })}
+
+                  <div className="p-6">
+                    <div className="flex items-center mb-3">
+                      <span className="bg-amber-200 px-3 py-1 rounded-full text-sm text-gray-800 font-medium">
+                        {product.category}
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                      {product.name}
+                    </h2>
+                    <div className="mt-4">
+                      {product.stock > 0 ? (
+                        <button
+                          onClick={() => addToCart(product)}
+                          className="w-full bg-amber-400 text-white py-3 px-4 rounded-lg font-medium hover:bg-orange-500 transition-colors duration-300 flex items-center justify-center"
+                        >
+                          Add to Cart
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 ml-2"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
+                            <path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                          </svg>
+                        </button>
+                      ) : (
+                        <button
+                          disabled
+                          className="w-full bg-gray-300 text-gray-600 py-3 px-4 rounded-lg font-medium cursor-not-allowed flex items-center justify-center"
+                        >
+                          Sold Out
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
           <div className="mt-12 text-center">
             <Link href="/shop">
-              <button className="px-8 py-3 bg-[#303241] text-[#FFFFFF] rounded-lg font-medium border border-[#FC7729] hover:bg-[#FC7729] hover:border-transparent transition-all duration-300 flex items-center gap-2 mx-auto">
+              <button className="px-8 py-3 bg-orange-500 text-white rounded-lg font-medium hover:bg-amber-400 transition-colors duration-300 flex items-center gap-2 mx-auto">
                 View All Products
-                <ArrowRight size={16} />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </button>
             </Link>
           </div>
@@ -480,7 +474,6 @@ export default function Home() {
               pets and their unique needs
             </p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {userTypes.map((type, index) => (
               <div
@@ -501,9 +494,7 @@ export default function Home() {
                       {type.title}
                     </h3>
                   </div>
-
                   <p className="text-[#C8C8C8] mb-6">{type.description}</p>
-
                   <div className="mt-auto">
                     {type.features.map((feature, idx) => (
                       <div
@@ -526,24 +517,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pet Health Resources - using fetched articles now! */}
+      {/* Pet Health Resources Section */}
       <section className="py-20 bg-[#ffffff]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fadeIn">
             <span className="inline-block px-4 py-1 rounded-full bg-[#FC7729]/20 text-[#FC7729] font-medium text-sm mb-4">
               PET HEALTH RESOURCES
             </span>
-            <h2 className="text-4xl font-bold text-[#000000] mb-4">
-              Expert Advice &amp; Resources
-            </h2>
+            <h2 className="text-4xl font-bold text-[#000000] mb-4">Articles</h2>
             <p className="text-lg text-[#000000] max-w-2xl mx-auto">
               Stay informed with our collection of veterinarian-approved
               articles on pet health, care guidelines, and emergency
               preparedness
             </p>
           </div>
-
-          {/* Loading/Error/Empty states for Articles */}
           {articlesLoading ? (
             <div className="text-center text-[#C8C8C8]">
               Loading articles...
@@ -554,7 +541,6 @@ export default function Home() {
             <div className="text-center text-[#C8C8C8]">No articles found.</div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Featured Article (if any) */}
               {featuredArticle && (
                 <div className="lg:col-span-3 animate-fadeIn">
                   <div
@@ -596,8 +582,6 @@ export default function Home() {
                   </div>
                 </div>
               )}
-
-              {/* The rest of the articles */}
               {fetchedArticles.map((article, index) => (
                 <div
                   key={index}
@@ -644,7 +628,6 @@ export default function Home() {
               ))}
             </div>
           )}
-
           <div className="mt-12 text-center">
             <Link href="/resources">
               <button className="px-8 py-3 bg-[#303241] text-[#FFFFFF] rounded-lg font-medium border border-[#FCAA29] hover:bg-[#FCAA29] hover:text-[#000000] hover:border-transparent transition-all duration-300 flex items-center gap-2 mx-auto">
@@ -663,7 +646,7 @@ export default function Home() {
           onClick={closePopup}
         >
           <div
-            className="bg-[#303241] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-fadeIn"
+            className="bg-[#303241] rounded-xl max-w-7xl w-full max-h-[90vh] overflow-y-auto animate-fadeIn"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 bg-[#303241] p-4 border-b border-[#C8C8C8]/10 flex justify-between items-center z-10">
@@ -677,7 +660,6 @@ export default function Home() {
                 <X size={20} />
               </button>
             </div>
-
             <div className="p-6">
               {selectedArticle.tags && (
                 <div className="flex flex-wrap gap-2 mb-4">
@@ -697,8 +679,6 @@ export default function Home() {
                   )}
                 </div>
               )}
-
-              {/* Article Image */}
               {selectedArticle.image && (
                 <img
                   src={selectedArticle.image}
@@ -706,15 +686,10 @@ export default function Home() {
                   className="w-full h-64 object-cover rounded-lg mb-6"
                 />
               )}
-
               <div className="prose prose-invert max-w-none">
-                {/* If your API articles have full content in "content" instead of "fullContent",
-                    just switch to article.content here. */}
                 {(selectedArticle.fullContent || selectedArticle.content || "")
                   .split("\n\n")
                   .map((paragraph, idx) => {
-                    // If your paragraphs contain markdown headings like "**Some Title:**"
-                    // you can parse them here. The below is a naive example:
                     if (
                       paragraph.startsWith("**") &&
                       paragraph.endsWith(":**")
@@ -740,82 +715,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      {/* Shopping Cart Sidebar */}
-      <div
-        className={`fixed top-0 right-0 h-full w-full md:w-96 bg-[#1D1D1D] shadow-xl z-50 transform transition-transform duration-300 ease-in-out ${
-          isCartOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex justify-between items-center p-4 border-b border-[#C8C8C8]/10">
-          <h3 className="text-xl font-bold text-[#FFFFFF]">Your Cart</h3>
-          <button
-            onClick={toggleCart}
-            className="p-2 rounded-full hover:bg-[#303241] transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="p-4 h-[calc(100%-180px)] overflow-y-auto">
-          {cartItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <ShoppingCart size={60} className="text-[#C8C8C8]/30 mb-4" />
-              <p className="text-[#C8C8C8] mb-2">Your cart is empty</p>
-              <p className="text-[#C8C8C8]/60 text-sm">
-                Browse our products and add items to your cart
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {cartItems.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex gap-4 border-b border-[#C8C8C8]/10 pb-4"
-                >
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-20 h-20 object-cover rounded-md"
-                  />
-                  <div className="flex-1">
-                    <h4 className="text-[#FFFFFF] font-medium">{item.name}</h4>
-                    <p className="text-[#C8C8C8] text-sm">{item.category}</p>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-[#FCAA29] font-bold">
-                        {item.price}
-                      </span>
-                      <div className="flex items-center">
-                        <button className="w-6 h-6 bg-[#303241] rounded-full text-[#FFFFFF] flex items-center justify-center">
-                          -
-                        </button>
-                        <span className="mx-2 text-[#FFFFFF]">1</span>
-                        <button className="w-6 h-6 bg-[#303241] rounded-full text-[#FFFFFF] flex items-center justify-center">
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <button className="text-[#C8C8C8] hover:text-[#FC7729]">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 bg-[#1D1D1D] border-t border-[#C8C8C8]/10 p-4">
-          <div className="flex justify-between mb-4">
-            <span className="text-[#C8C8C8]">Total:</span>
-            {/* Replace $0.00 with actual total calculation if desired */}
-            <span className="text-[#FCAA29] font-bold">$0.00</span>
-          </div>
-          <button className="w-full bg-[#FC7729] hover:bg-[#FCAA29] text-[#FFFFFF] py-3 rounded-lg font-medium transition-colors duration-300 flex items-center justify-center gap-2">
-            Checkout
-          </button>
-        </div>
-      </div>
     </main>
   );
 }
