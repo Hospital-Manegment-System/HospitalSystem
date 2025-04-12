@@ -51,7 +51,7 @@ export default async function DashboardLayout({ children }) {
                 User Management
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 href="/Dashboard/PatientRecords"
                 className="flex items-center px-4 py-3 text-white bg-[#FC7729] rounded-md shadow-md"
@@ -72,7 +72,7 @@ export default async function DashboardLayout({ children }) {
                 </svg>
                 Patient Records
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 href="/Dashboard/Analytics"
