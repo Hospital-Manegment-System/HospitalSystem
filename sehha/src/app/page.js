@@ -357,6 +357,7 @@ export default function Home() {
       </section>
 
       {/* Shop Section (Dynamic) */}
+      {/* Shop Section (Dynamic) */}
       <section className="py-20 bg-[#ffffff]" id="shop">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fadeIn">
@@ -382,9 +383,9 @@ export default function Home() {
           ) : products.length === 0 ? (
             <div className="text-center text-[#C8C8C8]">No products found.</div>
           ) : (
-            // Product Grid
+            // Product Grid limited to 4 products
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.map((product, index) => {
+              {products.slice(0, 4).map((product, index) => {
                 const ratingValue = Math.floor(product.rating || 0);
                 return (
                   <div
