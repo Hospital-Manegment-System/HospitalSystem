@@ -3,12 +3,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 
 async function fetchCategories() {
   try {
-    const response = await axios.get("http://localhost:3000/api/animal-products", {
+    const response = await axios.get("/api/animal-products", {
       params: { getCategories: true },
     });
     return response.data;
@@ -20,7 +19,7 @@ async function fetchCategories() {
 
 async function fetchProducts({ category = "all", search = "", page = 1 }) {
   try {
-    const response = await axios.get("http://localhost:3000/api/animal-products", {
+    const response = await axios.get("/api/animal-products", {
       params: { category, search, page },
       headers: {
         "Cache-Control": "no-store",
@@ -37,21 +36,8 @@ async function fetchProducts({ category = "all", search = "", page = 1 }) {
   }
 }
 
-async function fetchCart(userId) {
-  try {
-    const response = await axios.get("http://localhost:3000/api/cart", {
-      params: { userId },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching cart:", error);
-    return { items: [], totalAmount: 0 };
-  }
-}
-
 export default function AnimalProductsPage() {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState({ items: [], totalAmount: 0 });
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
@@ -62,8 +48,7 @@ export default function AnimalProductsPage() {
     productsPerPage: 6,
   });
   const [error, setError] = useState(null);
-  const router = useRouter();
-  const userId = "guest";
+  const [isLoading, setIsLoading] = useState(true); // حالة التحميل الجديدة
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -73,9 +58,11 @@ export default function AnimalProductsPage() {
     });
   }, []);
 
-  // Fetch products and cart when category, search, or page changes
+  // Fetch products when category, search, or page changes
   useEffect(() => {
-    fetchProducts({ category, search, page: pagination.currentPage }).then((data) => {
+    async function loadProducts() {
+      setIsLoading(true); // نبدأ التحميل
+      const data = await fetchProducts({ category, search, page: pagination.currentPage });
       console.log("Fetched products:", data);
       if (data.error) {
         setError(data.error);
@@ -89,33 +76,10 @@ export default function AnimalProductsPage() {
           ...data.pagination,
         }));
       }
-    });
-
-    fetchCart(userId).then((data) => {
-      console.log("Fetched cart:", data);
-      setCart(data);
-    });
-  }, [category, search, pagination.currentPage]);
-
-  const addToCart = async (product) => {
-    try {
-      console.log("Adding product to cart:", product);
-      const response = await axios.post("/api/cart", { userId, product });
-
-      const responseData = response.data;
-      console.log("Add to cart response:", responseData);
-
-      if (!response.ok) {
-        throw new Error(`Failed to add to cart: ${responseData.error || "Unknown error"}`);
-      }
-
-      setCart(responseData);
-      router.push("/cart");
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      alert(`Failed to add to cart: ${error.message}`);
+      setIsLoading(false); // ننهي التحميل
     }
-  };
+    loadProducts();
+  }, [category, search, pagination.currentPage]);
 
   const handleCategoryChange = (newCategory) => {
     setCategory(newCategory);
@@ -153,8 +117,8 @@ export default function AnimalProductsPage() {
           </h1>
         </div>
 
-        {/* Filter and Cart Controls */}
-        <div className="max-w-2xl mx-auto mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+        {/* Filter Controls */}
+        <div className="max-w-2xl mx-auto mb-8 flex flex-col sm:flex-row justify-center items-center gap-4">
           <div className="w-full sm:w-auto">
             <label htmlFor="category" className="mr-2 text-gray-700 font-medium">
               Filter by Category:
@@ -172,20 +136,6 @@ export default function AnimalProductsPage() {
               ))}
             </select>
           </div>
-          <Link href="/cart">
-            <button className="bg-[#FC7729] text-white py-3 px-6 rounded-lg font-medium hover:bg-[#FCAA29] transition-colors duration-300 flex items-center">
-              View Cart ({cart.items.reduce((total, item) => total + item.quantity, 0)})
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 ml-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
-                <path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-              </svg>
-            </button>
-          </Link>
         </div>
 
         {/* Search Box */}
@@ -217,8 +167,13 @@ export default function AnimalProductsPage() {
           </div>
         </div>
 
-        {/* Products Display or Error/Empty State */}
-        {error ? (
+        {/* Products Display or Error/Loading/Empty State */}
+        {isLoading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-orange-500 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading products...</p>
+          </div>
+        ) : error ? (
           <div className="text-center py-16 bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -291,8 +246,8 @@ export default function AnimalProductsPage() {
                     <h2 className="text-2xl font-bold text-gray-800 mb-3">
                       {product.name}
                     </h2>
-                    <div className="mt-6 flex gap-3">
-                      <Link href={`/animal-products/${product._id}`} className="flex-1">
+                    <div className="mt-6">
+                      <Link href={`/animal-products/${product._id}`}>
                         <button className="w-full bg-orange-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-amber-400 transition-colors duration-300 flex items-center justify-center">
                           View Details
                           <svg
@@ -309,30 +264,6 @@ export default function AnimalProductsPage() {
                           </svg>
                         </button>
                       </Link>
-                      {product.stock > 0 ? (
-                        <button
-                          onClick={() => addToCart(product)}
-                          className="flex-1 bg-amber-400 text-white py-3 px-4 rounded-lg font-medium hover:bg-orange-500 transition-colors duration-300 flex items-center justify-center"
-                        >
-                          Add to Cart
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 ml-2"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z" />
-                            <path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                          </svg>
-                        </button>
-                      ) : (
-                        <button
-                          disabled
-                          className="flex-1 bg-gray-300 text-gray-600 py-3 px-4 rounded-lg font-medium cursor-not-allowed flex items-center justify-center"
-                        >
-                          Sold Out
-                        </button>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -387,18 +318,6 @@ export default function AnimalProductsPage() {
             )}
           </>
         )}
-
-        {/* Footer */}
-        <div className="mt-16 py-6 text-center">
-          <div className="inline-block px-6 py-2 bg-gray-800 text-white rounded-full mb-4">
-            <span className="text-amber-400 font-bold">Pet</span>
-            <span className="text-white font-bold">Care</span>
-            <span className="text-orange-500 font-bold">Plus</span>
-          </div>
-          <p className="text-gray-700 text-sm">
-            Providing the best medical products for your beloved pets
-          </p>
-        </div>
       </div>
     </div>
   );
