@@ -14,6 +14,7 @@ const navLinks = [
   { name: "Insurance", path: "/insurance" },
   { name: "About Us", path: "/about" },
   { name: "Contact", path: "/contact" },
+  { name: "Patient Record", path: "/PatientRecord" },
 ];
 
 export default function Navbar() {
