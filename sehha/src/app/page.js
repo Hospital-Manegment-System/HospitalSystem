@@ -344,22 +344,12 @@ export default function Home() {
       </section>
 
       {/* Shop Section (Dynamic) */}
-      <section
-        className="py-20 bg-gradient-to-b from-white to-gray-200"
-        id="shop"
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header with Icon */}
-          <div className="flex items-center justify-center mb-10">
-            <div className="bg-amber-400 p-3 rounded-full shadow-lg mr-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-white"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2c-5.33 4-8 8-8 12 0 4.42 3.58 8 8 8s8-3.58 8-8c0-4-2.67-8-8-12zm1 17.5c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm1.5-5.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-3-3c-.83 0-1.5-.67-1.5-1.5S10.67 8 11.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-1-3c-.83 0-1.5-.67-1.5-1.5S9.67 4 10.5 4s1.5.67 1.5 1.5S11.33 8 10.5 8z" />
-              </svg>
+      {/* Shop Section (Dynamic) */}
+      <section className="py-20 bg-[#ffffff]" id="shop">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-fadeIn">
+            <div className="inline-block px-4 py-1 rounded-full bg-[#FC7729]/20 text-[#FC7729] font-medium text-sm mb-4">
+              PET PHARMACY
             </div>
             <h1 className="text-4xl font-bold text-gray-800">
               Quality Pet Medications & Supplies
@@ -437,25 +427,7 @@ export default function Home() {
             </div>
           )}
 
-          <div className="mt-12 text-center">
-            <Link href="/shop">
-              <button className="px-8 py-3 bg-orange-500 text-white rounded-lg font-medium hover:bg-amber-400 transition-colors duration-300 flex items-center gap-2 mx-auto">
-                View All Products
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </Link>
-          </div>
+          <div className="mt-12 text-center"></div>
         </div>
       </section>
 
@@ -628,14 +600,7 @@ export default function Home() {
               ))}
             </div>
           )}
-          <div className="mt-12 text-center">
-            <Link href="/resources">
-              <button className="px-8 py-3 bg-[#303241] text-[#FFFFFF] rounded-lg font-medium border border-[#FCAA29] hover:bg-[#FCAA29] hover:text-[#000000] hover:border-transparent transition-all duration-300 flex items-center gap-2 mx-auto">
-                View All Resources
-                <ArrowRight size={16} />
-              </button>
-            </Link>
-          </div>
+          <div className="mt-12 text-center"></div>
         </div>
       </section>
 
