@@ -1,7 +1,7 @@
 // src/app/api/articles/route.js
 import { NextResponse } from "next/server";
-import connectMongoDB from "@/app/lib/config";
-import Article from "@/app/lib/models/Article";
+import connectMongoDB from "../../lib/config";
+import Article from "../../lib/models/Article";
 
 export async function GET() {
   try {
