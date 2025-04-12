@@ -12,25 +12,56 @@ export default function UserProfilePage() {
     profilePicture: "",
     petType: "",
     petName: "",
+    petAge: "", // Controlled as a string for the input
   });
-  const [editing, setEditing] = useState(false);
   const [updatedData, setUpdatedData] = useState(userData);
+  const [appointments, setAppointments] = useState([]);
+  const [editing, setEditing] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
 
+  // Fetch user profile data
   useEffect(() => {
     async function fetchUserData() {
       try {
         const response = await axios.get("/api/user/profile");
-        setUserData(response.data);
-        setUpdatedData(response.data);
+        const user = response.data;
+        // Convert petAge to string for controlled components
+        setUserData({
+          ...user,
+          petAge:
+            user.petAge !== undefined && user.petAge !== null
+              ? String(user.petAge)
+              : "",
+        });
+        setUpdatedData({
+          ...user,
+          petAge:
+            user.petAge !== undefined && user.petAge !== null
+              ? String(user.petAge)
+              : "",
+        });
       } catch (err) {
         console.error("Error fetching user data:", err);
         setError("Failed to fetch user data.");
       }
     }
-
     fetchUserData();
+  }, []);
+
+  // Fetch the user's reserved appointments
+  useEffect(() => {
+    async function fetchAppointments() {
+      try {
+        const response = await axios.get("/api/user/appointments");
+        if (response.data.appointments) {
+          setAppointments(response.data.appointments);
+        }
+      } catch (err) {
+        console.error("Error fetching appointments:", err);
+      }
+    }
+    fetchAppointments();
   }, []);
 
   const handleChange = (e) => {
@@ -39,10 +70,24 @@ export default function UserProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    // Convert petAge to a number before sending
+    const payload = {
+      ...updatedData,
+      petAge:
+        updatedData.petAge !== "" ? Number(updatedData.petAge) : undefined,
+    };
+
     try {
-      const response = await axios.put("/api/user/profile", updatedData);
+      const response = await axios.put("/api/user/profile", payload);
       if (response.status === 200) {
-        setUserData(updatedData);
+        setUserData({
+          ...payload,
+          petAge: payload.petAge !== undefined ? String(payload.petAge) : "",
+        });
+        setUpdatedData({
+          ...payload,
+          petAge: payload.petAge !== undefined ? String(payload.petAge) : "",
+        });
         setEditing(false);
       }
     } catch (err) {
@@ -68,7 +113,7 @@ export default function UserProfilePage() {
         )}
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Column - Profile Overview */}
+          {/* Left Column - Profile Overview & Appointments */}
           <div className="lg:w-1/3">
             <div className="bg-[#303241] rounded-2xl overflow-hidden shadow-lg mb-6">
               <div className="h-24 bg-gradient-to-r from-[#FC7729] to-[#FCAA29]"></div>
@@ -104,6 +149,7 @@ export default function UserProfilePage() {
                   <div className="mt-6 pt-6 border-t border-[#1D1D1D]">
                     <div className="flex items-center mb-3">
                       <div className="w-10 h-10 rounded-full bg-[#1D1D1D] flex items-center justify-center mr-3">
+                        {/* Icon */}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-5 w-5 text-[#FCAA29]"
@@ -134,54 +180,28 @@ export default function UserProfilePage() {
               </div>
             </div>
 
-            {!editing && userData.petName && (
-              <div className="bg-[#303241] rounded-2xl p-6 shadow-lg">
-                <h3 className="text-[#F2C94C] font-medium mb-4 flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  My Pet
-                </h3>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 rounded-full bg-[#FCAA29] flex items-center justify-center mr-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-[#1D1D1D]"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-[#FFFFFF] font-medium">
-                      {userData.petName}
-                    </h4>
-                    <p className="text-[#C8C8C8] text-sm">
-                      {userData.petType || "Type not specified"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Appointments Overview */}
+            <div className="bg-[#303241] rounded-2xl p-6 shadow-lg mb-6">
+              <h3 className="text-[#FCAA29] font-medium mb-4">
+                My Appointments
+              </h3>
+              {appointments.length > 0 ? (
+                <ul className="space-y-2">
+                  {appointments.map((appointment) => (
+                    <li key={appointment._id} className="text-[#FFFFFF]">
+                      Date: {new Date(appointment.date).toLocaleDateString()}{" "}
+                      &middot; Time: {appointment.startTime} -{" "}
+                      {appointment.endTime}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[#C8C8C8]">No appointments reserved.</p>
+              )}
+            </div>
           </div>
 
-          {/* Right Column - Main Content */}
+          {/* Right Column - Main Content (Profile Details and Edit Form) */}
           <div className="lg:w-2/3">
             <div className="bg-[#303241] rounded-2xl p-6 shadow-lg">
               <h1 className="text-2xl font-bold text-[#FC7729] pb-4 border-b border-[#1D1D1D] mb-6">
@@ -248,7 +268,6 @@ export default function UserProfilePage() {
                     <h3 className="text-xl font-medium text-[#F2C94C] mb-4">
                       Pet Details
                     </h3>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label
@@ -262,6 +281,22 @@ export default function UserProfilePage() {
                           type="text"
                           name="petName"
                           value={updatedData.petName}
+                          onChange={handleChange}
+                          className="w-full bg-[#1D1D1D] border border-[#1D1D1D] focus:border-[#FCAA29] rounded-lg p-3 text-[#FFFFFF] focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          className="block text-[#F2C94C] text-sm font-medium mb-2"
+                          htmlFor="petAge"
+                        >
+                          Pet Age
+                        </label>
+                        <input
+                          id="petAge"
+                          type="number"
+                          name="petAge"
+                          value={updatedData.petAge}
                           onChange={handleChange}
                           className="w-full bg-[#1D1D1D] border border-[#1D1D1D] focus:border-[#FCAA29] rounded-lg p-3 text-[#FFFFFF] focus:outline-none"
                         />
@@ -324,6 +359,16 @@ export default function UserProfilePage() {
                           <p className="text-[#C8C8C8] text-sm">Pet Type</p>
                           <p className="text-[#FFFFFF]">
                             {userData.petType || "Not specified"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[#C8C8C8] text-sm">Pet Age</p>
+                          <p className="text-[#FFFFFF]">
+                            {userData.petAge !== undefined &&
+                            userData.petAge !== null &&
+                            userData.petAge !== ""
+                              ? `Age: ${userData.petAge}`
+                              : "Age not provided"}
                           </p>
                         </div>
                       </div>

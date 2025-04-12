@@ -179,10 +179,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import DepartmentSelector from "@/app/components/DepartmentSelector";
-import DoctorSelector from "@/app/components/DoctorSelector";
-import DateTimeSelector from "@/app/components/DateTimeSelector";
-import AppointmentForm from "@/app/components/AppointmentForm";
+import DepartmentSelector from "../components/DepartmentSelector";
+import DoctorSelector from "../components/DoctorSelector";
+import DateTimeSelector from "../components/DateTimeSelector";
+import AppointmentForm from "../components/AppointmentForm";
 
 export default function AppointmentPage() {
   const router = useRouter();
@@ -217,7 +217,7 @@ export default function AppointmentPage() {
     setFormData({ ...formData, date, startTime, endTime });
     setStep(4);
   };
-  
+
   useEffect(() => {
     // دالة لجلب الأقسام من API
     const getDepartment = async () => {
@@ -245,7 +245,7 @@ export default function AppointmentPage() {
       [name]: type === "checkbox" ? checked : value,
     });
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -256,12 +256,12 @@ export default function AppointmentPage() {
       const response = await axios.post("/api/appointments", formData, {
         withCredentials: true, // Ensure cookies are sent with the request
       });
-      
+
       setSuccess("Appointment booked successfully!");
 
       // Redirect after successful booking
       setTimeout(() => {
-        router.push("/dashboard"); // Consider redirecting to a confirmation page
+        router.push("/"); // Consider redirecting to a confirmation page
       }, 2000);
     } catch (error) {
       console.error("Booking error:", error);
@@ -329,6 +329,8 @@ export default function AppointmentPage() {
           onBack={() => setStep(1)}
         />
       )}
+
+      {console.log(formData.doctorId)}
 
       {step === 3 && (
         <DateTimeSelector
