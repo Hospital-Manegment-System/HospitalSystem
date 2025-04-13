@@ -16,6 +16,29 @@ export default function LoginPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError(null);
+  //   try {
+  //     const res = await fetch("/api/auth/login", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) {
+  //       setError(data.error);
+  //     } else {
+  //       if (data.user.role === "admin") {
+  //         router.push("/Dashboard/UserManagement");
+  //       } else {
+  //         router.push("/");
+  //       }
+  //     }
+  //   } catch (err) {
+  //     setError("Something went wrong. Please try again.");
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -30,16 +53,15 @@ export default function LoginPage() {
         setError(data.error);
       } else {
         if (data.user.role === "admin") {
-          router.push("/Dashboard/UserManagement");
+          window.location.href = "/Dashboard/UserManagement"; // Full reload
         } else {
-          router.push("/");
+          window.location.href = "/"; // Full reload
         }
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
     }
   };
-
   const handleGoogleLogin = () => {
     // Trigger Google login via NextAuth
     // signIn("google");

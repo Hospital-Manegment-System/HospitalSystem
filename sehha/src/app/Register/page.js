@@ -37,7 +37,7 @@ export default function RegisterPage() {
     try {
       const response = await axios.post("/api/auth/register", payload);
       if (response.status === 201) {
-        router.push("/login");
+        router.push("/Login");
       }
     } catch (err) {
       if (err.response && err.response.data) {
