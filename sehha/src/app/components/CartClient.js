@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function CartClient({ initialCart, userId }) {
-  const [cart, setCart] = useState(initialCart || { items: [], totalAmount: 0 });
+  const [cart, setCart] = useState(
+    initialCart || { items: [], totalAmount: 0 }
+  );
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -62,7 +64,7 @@ export default function CartClient({ initialCart, userId }) {
 
       setCart({ items: [], totalAmount: 0 });
       alert("Checkout successful! Your cart has been cleared.");
-      router.push("/animal-products");
+      router.push("/Payment");
     } catch (error) {
       console.error("Error clearing cart:", error);
       alert("Failed to clear cart.");
@@ -75,7 +77,9 @@ export default function CartClient({ initialCart, userId }) {
         <div className="bg-white p-8 rounded-xl shadow-xl">
           <div className="flex items-center space-x-4">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-            <p className="text-blue-800 text-xl font-medium">Loading your cart...</p>
+            <p className="text-blue-800 text-xl font-medium">
+              Loading your cart...
+            </p>
           </div>
         </div>
       </div>
@@ -100,7 +104,9 @@ export default function CartClient({ initialCart, userId }) {
               <path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
             </svg>
           </div>
-          <h1 className="text-4xl font-bold text-blue-900 tracking-tight">Your Cart</h1>
+          <h1 className="text-4xl font-bold text-blue-900 tracking-tight">
+            Your Cart
+          </h1>
         </div>
 
         {cartItems.length === 0 ? (
@@ -116,8 +122,12 @@ export default function CartClient({ initialCart, userId }) {
                 <path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-blue-900 mb-4">Your cart is empty</h2>
-            <p className="text-gray-600 mb-8 text-lg">Time to find some amazing products for your furry friends!</p>
+            <h2 className="text-3xl font-bold text-blue-900 mb-4">
+              Your cart is empty
+            </h2>
+            <p className="text-gray-600 mb-8 text-lg">
+              Time to find some amazing products for your furry friends!
+            </p>
             <Link href="/animal-products">
               <button className="bg-gradient-to-r from-orange-400 to-orange-500 text-white py-4 px-8 rounded-xl font-medium hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                 Explore Products
@@ -127,13 +137,18 @@ export default function CartClient({ initialCart, userId }) {
         ) : (
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
             <div className="mb-6 pb-4 border-b border-gray-100">
-              <h2 className="text-2xl font-semibold text-blue-900">Shopping Cart ({cartItems.length} items)</h2>
+              <h2 className="text-2xl font-semibold text-blue-900">
+                Shopping Cart ({cartItems.length} items)
+              </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 gap-6">
               {cartItems.map((item) => {
                 // Ensure productId exists and is a string
-                const productId = item.productId?._id?.toString() || item.productId?.toString() || '';
+                const productId =
+                  item.productId?._id?.toString() ||
+                  item.productId?.toString() ||
+                  "";
 
                 if (!productId) {
                   console.warn("Skipping item with invalid productId:", item);
@@ -153,22 +168,34 @@ export default function CartClient({ initialCart, userId }) {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-blue-900 mb-1">{item.name}</h3>
+                      <h3 className="text-xl font-bold text-blue-900 mb-1">
+                        {item.name}
+                      </h3>
                       <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
-                        <p className="bg-blue-50 px-3 py-1 rounded-full">Unit Price: ${item.price}</p>
-                        <p className="bg-green-50 px-3 py-1 rounded-full text-green-700 font-medium">Subtotal: ${item.subtotal}</p>
+                        <p className="bg-blue-50 px-3 py-1 rounded-full">
+                          Unit Price: ${item.price}
+                        </p>
+                        <p className="bg-green-50 px-3 py-1 rounded-full text-green-700 font-medium">
+                          Subtotal: ${item.subtotal}
+                        </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-4">
                         <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                           <button
-                            onClick={() => updateCartItem(productId, "decrease")}
+                            onClick={() =>
+                              updateCartItem(productId, "decrease")
+                            }
                             className="bg-gray-100 text-blue-900 px-4 py-2 hover:bg-gray-200 font-bold"
                           >
                             -
                           </button>
-                          <span className="px-6 py-2 bg-white text-blue-900 font-medium">{item.quantity}</span>
+                          <span className="px-6 py-2 bg-white text-blue-900 font-medium">
+                            {item.quantity}
+                          </span>
                           <button
-                            onClick={() => updateCartItem(productId, "increase")}
+                            onClick={() =>
+                              updateCartItem(productId, "increase")
+                            }
                             className="bg-gray-100 text-blue-900 px-4 py-2 hover:bg-gray-200 font-bold"
                           >
                             +
@@ -178,8 +205,19 @@ export default function CartClient({ initialCart, userId }) {
                           onClick={() => updateCartItem(productId, "remove")}
                           className="text-sm flex items-center text-red-500 hover:text-red-700 font-medium"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
                           </svg>
                           Remove
                         </button>
@@ -198,15 +236,26 @@ export default function CartClient({ initialCart, userId }) {
                     ${cart.totalAmount.toFixed(2)}
                   </h3>
                 </div>
-                <button
-                  onClick={clearCart}
-                  className="mt-4 md:mt-0 w-full md:w-auto bg-gradient-to-r from-orange-400 to-orange-500 text-white py-4 px-8 rounded-xl font-medium hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                >
-                  <span>Proceed to Checkout</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
+                <Link href={"/payment"}>
+                  <button
+                    onClick={clearCart}
+                    className="mt-4 md:mt-0 w-full md:w-auto bg-gradient-to-r from-orange-400 to-orange-500 text-white py-4 px-8 rounded-xl font-medium hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  >
+                    <span>Proceed to Checkout</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

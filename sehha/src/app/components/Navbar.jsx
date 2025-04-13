@@ -286,7 +286,7 @@ export default function Navbar() {
             ) : !user ? (
               <>
                 <Link
-                  href="/Register"
+                  href="/register"
                   className="bg-[#F2C94C] text-[#1D1D1D] hover:bg-[#FCAA29] px-4 py-2 rounded-md font-bold text-sm shadow-md transition-all duration-200 border border-[#FFFFFF]"
                 >
                   Register
@@ -316,9 +316,7 @@ export default function Navbar() {
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    <span className="text-sm font-medium">
-                      {user.name }
-                    </span>
+                    <span className="text-sm font-medium">{user.name}</span>
                   </button>
                   <div className="absolute right-0 w-48 mt-2 origin-top-right bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <div className="py-1">
@@ -414,7 +412,7 @@ export default function Navbar() {
             ) : !user ? (
               <div className="flex flex-col space-y-2 mt-4">
                 <Link
-                  href="/Register"
+                  href="/register"
                   className="block w-full text-center bg-[#F2C94C] text-[#1D1D1D] hover:bg-[#FCAA29] px-4 py-2 rounded-md font-bold border border-[#FFFFFF]"
                   onClick={() => setIsMenuOpen(false)}
                 >

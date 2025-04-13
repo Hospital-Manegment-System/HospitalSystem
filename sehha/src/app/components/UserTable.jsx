@@ -741,9 +741,9 @@ export default function UserTable({ users: initialUsers }) {
               <th className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
                 Role
               </th>
-              <th className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+              {/* <th className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
                 Status
-              </th>
+              </th> */}
               <th className="px-6 py-4 text-left text-xs font-medium text-white uppercase tracking-wider">
                 Actions
               </th>
@@ -802,7 +802,7 @@ export default function UserTable({ users: initialUsers }) {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  {/* <td className="px-6 py-4 whitespace-nowrap">
                     {editingId === user._id ? (
                       <select
                         name="status"
@@ -823,7 +823,7 @@ export default function UserTable({ users: initialUsers }) {
                         {user.status}
                       </span>
                     )}
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     {editingId === user._id ? (
                       <div className="flex space-x-2">
