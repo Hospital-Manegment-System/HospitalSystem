@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-
+import Link from "next/link";
 export default function AppointmentForm({
   formData,
   onChange,
@@ -114,17 +114,19 @@ export default function AppointmentForm({
         </div>
 
         <div className="mt-8 flex justify-end">
-          <button
-            type="submit"
-            disabled={isSubmitting || !formData.reason || !formData.doctorId}
-            className={`px-6 py-2 rounded-md ${
-              isSubmitting || !formData.reason || !formData.doctorId
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-blue-600 text-white hover:bg-blue-700"
-            }`}
-          >
-            {isSubmitting ? "Booking..." : "Book Appointment"}
-          </button>
+          <Link href={"/Payment"}>
+            <button
+              type="submit"
+              disabled={isSubmitting || !formData.reason || !formData.doctorId}
+              className={`px-6 py-2 rounded-md ${
+                isSubmitting || !formData.reason || !formData.doctorId
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
+            >
+              {isSubmitting ? "Booking..." : "Book Appointment"}
+            </button>
+          </Link>
         </div>
       </form>
     </div>
